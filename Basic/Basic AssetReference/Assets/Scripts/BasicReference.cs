@@ -8,6 +8,7 @@ public class BasicReference : MonoBehaviour
 {
 
 	public AssetReference baseCube;
+	
 	// Use this for initialization
 	void Start () {
 		
@@ -21,5 +22,9 @@ public class BasicReference : MonoBehaviour
 	public void SpawnThing()
 	{
 		baseCube.InstantiateAsync();
+	}
+	public void UnloadScene()
+	{
+		DebugUtil.UnloadScene();
 	}
 }

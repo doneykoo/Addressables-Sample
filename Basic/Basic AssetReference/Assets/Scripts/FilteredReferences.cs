@@ -93,4 +93,8 @@ public class FilteredReferences : MonoBehaviour
         midMaterial.ReleaseAsset();
         lateMaterial.ReleaseAsset();
     }
+	public void UnloadScene()
+	{
+		DebugUtil.UnloadScene();
+	}
 }

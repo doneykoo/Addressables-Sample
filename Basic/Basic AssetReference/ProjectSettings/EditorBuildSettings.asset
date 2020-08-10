@@ -8,6 +8,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/BasicReference.unity
     guid: f89d7801df631034391bde9206700a98
+  - enabled: 1
+    path: Assets/Scenes/EmptyScene0.unity
+    guid: 76c9349267c7b4b86a9940efb6d55402
+  - enabled: 1
+    path: Assets/Scenes/FilteredReferences.unity
+    guid: 63fc2630c07c1d3419890a3aa704f8e0
+  - enabled: 1
+    path: Assets/Scenes/ListOfReferences.unity
+    guid: 2f0db6af6e7d5c849a27c06a20eca733
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 0fe2f474570eb2043bd2b69a8b24fc23,
       type: 2}
