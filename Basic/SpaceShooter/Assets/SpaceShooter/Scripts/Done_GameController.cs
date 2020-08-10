@@ -34,23 +34,58 @@ public class Done_GameController : MonoBehaviour
     int score;
 
     AsyncOperationHandle preloadOp;
+    bool baseDateTimeInitialized = false;
+    System.DateTime baseDateTime;
+    double ElpasedTime
+    {
+        get {
+            if (!baseDateTimeInitialized)
+            {
+                baseDateTime = System.DateTime.UtcNow;
+                baseDateTimeInitialized = true;
+            }
+            return (System.DateTime.UtcNow - baseDateTime).TotalMilliseconds / 1000.0; 
+        }
+    }
+    bool frameCountInitialized = false;
+    int baseFrameCount;
+    int ElapsedFrame
+    {
+        get
+        {
+            if (!frameCountInitialized)
+            {
+                baseFrameCount = Time.frameCount;
+                frameCountInitialized = true;
+            }
+            return Time.frameCount - baseFrameCount;
+        }
+    }
+
+    void Awake()
+    {
+        Debug.Log($"Awake - {ElpasedTime:f2}s {ElapsedFrame}f");
+    }
 
     void Start()
     {
         // ADDRESSABLES UPDATES
         loadingText.text = string.Format("Loading: {0}%", 0);
+        Debug.Log($"Start - {ElpasedTime:f2}s {ElapsedFrame}f");
         preloadOp = Addressables.DownloadDependenciesAsync("preload");
         LoadHazards();
     }
 
     void LoadHazards()
     {
+        Debug.Log($"LoadHazards - {ElpasedTime:f2}s {ElapsedFrame}f");
         Addressables.LoadResourceLocationsAsync(hazardsLabel.labelString).Completed += OnHazardsLoaded;
     }
 
     // ADDRESSABLES UPDATES
     void OnHazardsLoaded(AsyncOperationHandle<IList<IResourceLocation>> op)
     {
+        Debug.Log($"OnHazardsLoaded - {ElpasedTime:f2}s {ElapsedFrame}f");
         if (op.Status == AsyncOperationStatus.Failed)
         {
             Debug.Log("Failed to load hazards, retrying in 1 second...");
@@ -58,8 +93,10 @@ public class Done_GameController : MonoBehaviour
             return;
         }
         hazardLocations = new List<IResourceLocation>(op.Result);
+        Debug.Log($"OnHazardsLoaded - player.InstantiateAsync  {ElpasedTime:f2}s {ElapsedFrame}f");
         player.InstantiateAsync().Completed += op2 =>
         {
+            Debug.Log($"OnHazardsLoaded - player.InstantiateAsync Completed  {ElpasedTime:f2}s {ElapsedFrame}f");
             if (op2.Status == AsyncOperationStatus.Failed)
             {
                 gameOverText.text = "Failed to load player prefab. Check console for errors.";
@@ -83,11 +120,14 @@ public class Done_GameController : MonoBehaviour
         if (preloadOp.IsValid())
         {
             loadingText.text = string.Format("Loading: {0}%", (int)(preloadOp.PercentComplete * 100));
+            Debug.Log($"Update - loadingText: \"{loadingText.text}\"  {ElpasedTime:f2}s {ElapsedFrame}f");
             if (preloadOp.PercentComplete == 1)
             {
+                Debug.Log($"Update - preloadOp.PercentComplete == 1  {ElpasedTime:f2}s {ElapsedFrame}f");
                 Addressables.Release(preloadOp);
                 preloadOp = new AsyncOperationHandle();
                 loadingText.text = "";
+                //LoadHazards();
             }
         }
         if (restart)
@@ -103,9 +143,12 @@ public class Done_GameController : MonoBehaviour
 
     IEnumerator SpawnWaves()
     {
+        Debug.Log($"SpawnWaves - WaitForSeconds startWait {startWait:f2} ...  {ElpasedTime:f2}s {ElapsedFrame}f");
         yield return new WaitForSeconds(startWait);
+        Debug.Log($"SpawnWaves - WaitForSeconds startWait {startWait:f2} finish.  {ElpasedTime:f2}s {ElapsedFrame}f");
         while (true)
         {
+            Debug.Log($"SpawnWaves - WaitForSeconds wave start ...  {ElpasedTime:f2}s {ElapsedFrame}f");
             for (int i = 0; i < hazardCount; i++)
             {
                 var hazardAddress = hazardLocations[Random.Range(0, hazardLocations.Count)];
@@ -117,6 +160,7 @@ public class Done_GameController : MonoBehaviour
 
                 yield return new WaitForSeconds(spawnWait);
             }
+            Debug.Log($"SpawnWaves - WaitForSeconds wave finish.  {ElpasedTime:f2}s {ElapsedFrame}f");
             yield return new WaitForSeconds(waveWait);
 
             if (gameOver)
