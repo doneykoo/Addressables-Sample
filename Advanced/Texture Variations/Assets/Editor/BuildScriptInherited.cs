@@ -109,6 +109,7 @@ public class BuildScriptInherited : BuildScriptPackedMode
                     var newEntry = aaContext.settings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(newFile), newGroup);
                     newEntry.address = entry.address;
                     newEntry.SetLabel(pair.label, true);
+                    Debug.Log($"entry address: {newEntry.address} label: {pair.label} fileName: {fileName} path: {newFile} scale: {scaleFactor} import size: {aiDest.maxTextureSize}");
                 }
                 entry.SetLabel(schema.BaselineLabel, true);
             }
